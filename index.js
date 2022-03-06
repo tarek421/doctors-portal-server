@@ -24,6 +24,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+
 const verifyToken = async (req, res, next) => {
   if (req.headers?.authorization?.startsWith("Bearer ")) {
     const token = req.headers.authorization.split(" ")[1];
@@ -47,7 +48,6 @@ async function run() {
     app.post("/appointments", async (req, res) => {
       const appointment = req.body;
       const result = await appointmentsCollection.insertOne(appointment);
-      // console.log(result);
       res.json(result);
     });
 
@@ -79,7 +79,6 @@ async function run() {
 
     app.put("/users", async (req, res) => {
       const user = req.body;
-      // console.log(user);
       const filter = { email: user.email };
       const options = { upsert: true };
       const update = { $set: user };
@@ -91,12 +90,10 @@ async function run() {
       const token = req.headers.authorization;
       const user = req.body;
       const requester = req.decodedEmail;
-      console.log(requester);
       if (requester) {
         const requesterAccount = await userCollection.findOne({
           email: requester,
         });
-        console.log(requesterAccount.email)
         if (requesterAccount.role === 'admin') {
           const user = req.body;
           const filter = { email: user.email };
